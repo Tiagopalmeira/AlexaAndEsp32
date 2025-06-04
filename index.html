@@ -5,27 +5,77 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Controle ESP32 com Alexa via SinricPro</title>
   <link rel="stylesheet" href="https://stackedit.io/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
+    body {
+      /* Aplicando a fonte Tetris de forma mais sutil no corpo, priorizando legibilidade */
+      /* Se quiser o tema completo, descomente a linha abaixo e ajuste font-size */
+      /* font-family: 'Press Start 2P', cursive; */
+      /* font-size: 10px; */ /* Press Start 2P é pequena, ajuste conforme necessário */
+    }
+    .stackedit__html h1,
+    .stackedit__html h2 {
+      font-family: 'Press Start 2P', cursive; /* Fonte Tetris para títulos */
+      animation: fadeInDown 0.8s ease-out; /* Animação de entrada para títulos */
+    }
+    .stackedit__html p,
+    .stackedit__html ul li {
+        font-size: 1.1em; /* Aumentar um pouco a fonte do texto normal para legibilidade */
+        line-height: 1.6;
+    }
+
     .button-container {
       text-align: center;
       margin-top: 30px;
     }
     .button-container button {
-      background-color: #4CAF50; /* Green */
-      border: none;
+      font-family: 'Press Start 2P', cursive; /* Fonte Tetris para botões */
+      background-color: #007bff; /* Azul */
+      border: 2px solid #0056b3;
       color: white;
-      padding: 15px 32px;
+      padding: 15px 25px;
       text-align: center;
       text-decoration: none;
       display: inline-block;
-      font-size: 16px;
-      margin: 4px 10px;
+      font-size: 14px; /* Ajustado para a fonte */
+      margin: 10px 10px;
       cursor: pointer;
-      border-radius: 8px;
-      transition-duration: 0.4s;
+      border-radius: 0px; /* Estilo Bloco */
+      box-shadow: 3px 3px 0px #0056b3; /* Sombra estilo pixel */
+      transition: transform 0.1s ease-out, box-shadow 0.1s ease-out, background-color 0.2s;
+      position: relative;
     }
     .button-container button:hover {
-      background-color: #45a049;
+      background-color: #0056b3;
+      transform: translate(2px, 2px); /* Efeito de botão pressionado */
+      box-shadow: 1px 1px 0px #003d80;
+    }
+    .button-container button:active {
+      transform: translate(3px, 3px);
+      box-shadow: 0px 0px 0px #003d80;
+    }
+
+    /* Animações */
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .stackedit__html hr {
+        animation: expandWidth 1s ease-out;
+    }
+    @keyframes expandWidth {
+        from {
+            width: 0%;
+        }
+        to {
+            width: 100%;
+        }
     }
   </style>
 </head>
@@ -43,8 +93,8 @@
     </ul>
     <hr>
     <div class="button-container">
-      <button onclick="window.location.href='config_ide.html'">Configuração do Arduino IDE</button>
-      <button onclick="window.location.href='board.html'">Código e Configuração da placa com SinricPro</button>
+      <button onclick="window.location.href='configurar_arduino_ide.html'">Configurar IDE</button>
+      <button onclick="window.location.href='codigo_configuracao_board.html'">Ver Código</button>
     </div>
   </div>
 </body>
