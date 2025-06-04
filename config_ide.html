@@ -1,37 +1,129 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Configuração do Arduino IDE para ESP32</title>
   <link rel="stylesheet" href="https://stackedit.io/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    body {
+      /* font-family: 'Press Start 2P', cursive; */
+      /* font-size: 10px; */
+    }
+
+    .stackedit__html h1,
+    .stackedit__html h2,
+    .stackedit__html h3 {
+      font-family: 'Press Start 2P', cursive;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    .stackedit__html pre {
+      animation: slideInLeft 0.8s ease-out;
+    }
+
+    .stackedit__html ul li {
+      font-size: 1.1em;
+      line-height: 1.6;
+      animation: slideInUp 0.5s ease-out;
+    }
+
+    .stackedit__html a {
+      color: #007bff;
+      transition: color 0.3s ease;
+    }
+
+    .stackedit__html a:hover {
+      color: #00eaff;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      font-family: 'Press Start 2P', cursive;
+      color: #007bff;
+      text-decoration: none;
+      padding: 10px;
+      border: 2px solid #007bff;
+      border-radius: 0;
+      /* Estilo Bloco */
+      transition: background-color 0.3s, color 0.3s;
+      animation: fadeIn 1.5s ease-in-out;
+    }
+
+    .back-link:hover {
+      background-color: #007bff;
+      color: white;
+    }
+
+    /* Animações */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideInLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-50px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
 </head>
+
 <body class="stackedit">
   <div class="stackedit__html">
-    <h1 id="configuracao-arduino-ide">🔧 Configuração do Arduino IDE para ESP32</h1>
+    <h1 id="configuracao-arduino-ide">🔧 Config. Arduino IDE</h1>
     <hr>
-    <h2 id="json-de-configuração-da-esp32-na-máquina-do-usuário">Json de configuração da ESP32 na máquina do usuário:</h2>
+    <h2 id="json-de-configuração-da-esp32-na-máquina-do-usuário">URL Placas ESP32:</h2>
     <pre class=" language-bash"><code class="prism  language-bash">https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
 </code></pre>
-    <h3 id="use-este-link-em-file--preferences--additional-board-config">Use este link em <code>File &gt; Preferences &gt; Additional Boards Manager URLs</code></h3>
-    <p>Após adicionar o link acima, vá em <code>Tools &gt; Board &gt; Boards Manager...</code>, procure por "esp32" e instale o pacote "esp32 by Espressif Systems".</p>
+    <h3 id="use-este-link-em-file--preferences--additional-board-config">Use em:
+      <code>File &gt; Preferences &gt; Additional Boards Manager URLs</code></h3>
+    <p>Após adicionar, vá em <code>Tools &gt; Board &gt; Boards Manager...</code>, procure "esp32" e instale "esp32 by
+      Espressif Systems".</p>
     <hr>
     <h2 id="📦-requisitos">📦 Requisitos</h2>
     <ul>
-      <li>ESP32 (ou ESP8266, com as devidas adaptações no código para Wi-Fi e pinos)</li>
-      <li>Conta no <a href="https://portal.sinric.pro/">SinricPro</a></li>
-      <li>App da <strong>Amazon Alexa</strong></li>
-      <li>Arduino IDE com bibliotecas instaladas (via <code>Sketch &gt; Include Library &gt; Manage Libraries...</code>):
+      <li>ESP32 (ou ESP8266)</li>
+      <li>Conta <a href="https://portal.sinric.pro/">SinricPro</a></li>
+      <li>App <strong>Amazon Alexa</strong></li>
+      <li>Arduino IDE + Bibliotecas:
         <ul>
-          <li><code>SinricPro</code> (por Boris Jaeger)</li>
-          <li><code>WiFi</code> (geralmente já inclusa no pacote ESP32/ESP8266)</li>
-          <li><code>ArduinoJson</code> (por Benoit Blanchon - dependência da SinricPro, geralmente instalada automaticamente)</li>
-          <li><code>WebSockets</code> (por Markus Sattler - dependência da SinricPro, geralmente instalada automaticamente)</li>
+          <li><code>SinricPro</code></li>
+          <li><code>WiFi</code></li>
+          <li><code>ArduinoJson</code></li>
+          <li><code>WebSockets</code></li>
         </ul>
       </li>
     </ul>
     <hr>
-    <p><a href="index.html">&lt;&lt; Voltar para a Página Inicial</a></p>
+    <a href="index class=" back-link">&lt;&lt; Voltar</a>
   </div>
 </body>
+
 </html>
