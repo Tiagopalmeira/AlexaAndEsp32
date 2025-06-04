@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Código e Configuração da Board ESP32</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+<body class="stackedit">
+  <div class="stackedit__html">
+    <h1 id="codigo-fonte-esp32">⚙️ Código Fonte e Configuração da Board ESP32</h1>
+    <hr>
+    <h2 id="main.ino-detalhes"><code>main.ino</code> - Detalhes do Código</h2>
+    <p>O código a seguir deve ser carregado no seu ESP32. Certifique-se de substituir os placeholders (<code>##########################</code>) pelas suas credenciais reais do Wi-Fi, SinricPro App Key, App Secret e o Device ID do seu switch virtual criado no portal SinricPro.</p>
+
+<pre class=" language-cpp"><code class="prism  language-cpp"><span class="token macro property">#<span class="token directive keyword">define</span> ENABLE_DEBUG</span>  <span class="token comment">// Descomente para habilitar mensagens de debug no Serial Monitor</span>
+
+<span class="token macro property">#<span class="token directive keyword">ifdef</span> ENABLE_DEBUG</span>
+  <span class="token macro property">#<span class="token directive keyword">define</span> DEBUG_ESP_PORT Serial</span> <span class="token comment">// Define a porta serial para debug</span>
+  <span class="token comment">// #define NODEBUG_WEBSOCKETS  // Descomente para desabilitar debug específico de WebSockets</span>
+  <span class="token comment">// #define NDEBUG              // Descomente para desabilitar todas as asserções (não recomendado para desenvolvimento)</span>
+<span class="token macro property">#<span class="token directive keyword">endif</span> </span>
+
+<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;Arduino.h&gt;</span></span> <span class="token comment">// Biblioteca principal do Arduino</span>
+
+<span class="token comment">// Seleciona a biblioteca Wi-Fi correta dependendo da placa</span>
+<span class="token macro property">#<span class="token directive keyword">if</span> defined(ESP8266)</span>
+  <span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;ESP8266WiFi.h&gt;</span></span>
+<span class="token macro property">#<span class="token directive keyword">elif</span> defined(ESP32) || defined(ARDUINO_ARCH_RP2040)</span>
+  <span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;WiFi.h&gt;</span></span>
+<span class="token macro property">#<span class="token directive keyword">endif</span></span>
+
+<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">"SinricPro.h"</span></span>       <span class="token comment">// Biblioteca principal do SinricPro</span>
+<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">"SinricProSwitch.h"</span></span> <span class="token comment">// Suporte para dispositivos do tipo "Switch" no SinricPro</span>
+
+<span class="token comment">// === CONFIGURAÇÕES DE REDE ===</span>
+<span class="token comment">// Substitua pelos dados da sua rede Wi-Fi</span>
+<span class="token macro property">#<span class="token directive keyword">define</span> WIFI_SSID      "SEU_NOME_DE_REDE_WIFI"</span>
+<span class="token macro property">#<span class="token directive keyword">define</span> WIFI_PASS      "SUA_SENHA_DA_REDE_WIFI"</span>
+
+<span class="token comment">// === CREDENCIAIS SINRIC PRO ===</span>
+<span class="token comment">// Substitua pelas suas credenciais obtidas no portal SinricPro</span>
+<span class="token macro property">#<span class="token directive keyword">define</span> APP_KEY        "SUA_APP_KEY_DO_SINRICPRO"</span>
+<span class="token macro property">#<span class="token directive keyword">define</span> APP_SECRET     "SEU_APP_SECRET_DO_SINRICPRO"</span>
+<span class="token macro property">#<span class="token directive keyword">define</span> SWITCH_ID_1    "SEU_DEVICE_ID_DO_SINRICPRO"</span> <span class="token comment">// ID do seu switch virtual</span>
+
+<span class="token comment">// === CONFIGURAÇÃO DO PINO DO RELÉ/LED ===</span>
+<span class="token macro property">#<span class="token directive keyword">define</span> RELAYPIN_1     2</span>        <span class="token comment">// GPIO2 é comumente usado para o LED embutido em muitas placas ESP32, ou conecte seu relé/LED aqui</span>
+<span class="token macro property">#<span class="token directive keyword">define</span> BAUD_RATE      115200</span>   <span class="token comment">// Taxa de comunicação para o Serial Monitor (pode ser 9600, 19200, etc., mas 115200 é comum para ESP32)</span>
+
+<span class="token comment">// Função de Callback: Chamada quando o estado do switch é alterado via SinricPro/Alexa</span>
+<span class="token keyword">bool</span> <span class="token function">onPowerState1</span><span class="token punctuation">(</span><span class="token keyword">const</span> String <span class="token operator">&amp;</span>deviceId<span class="token punctuation">,</span> <span class="token keyword">bool</span> <span class="token operator">&amp;</span>state<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  Serial<span class="token punctuation">.</span><span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"Dispositivo com ID '%s' mudou para o estado: %s\n"</span><span class="token punctuation">,</span> deviceId<span class="token punctuation">.</span><span class="token function">c_str</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> state <span class="token operator">?</span> <span class="token string">"LIGADO"</span> <span class="token operator">:</span> <span class="token string">"DESLIGADO"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token function">digitalWrite</span><span class="token punctuation">(</span>RELAYPIN_1<span class="token punctuation">,</span> state <span class="token operator">?</span> HIGH <span class="token operator">:</span> LOW<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// Aciona o pino do relé/LED</span>
+  <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span> <span class="token comment">// Indica que o comando foi processado com sucesso</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// Configura e conecta ao Wi-Fi</span>
+<span class="token keyword">void</span> <span class="token function">setupWiFi</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  Serial<span class="token punctuation">.</span><span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"[WiFi]: Conectando a %s "</span><span class="token punctuation">,</span> WIFI_SSID<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token macro property">#<span class="token directive keyword">if</span> defined(ESP8266)</span>
+  WiFi<span class="token punctuation">.</span><span class="token function">setSleepMode</span><span class="token punctuation">(</span>WIFI_NONE_SLEEP<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// Desabilita modo sleep no ESP8266 para manter conexão</span>
+<span class="token macro property">#<span class="token directive keyword">elif</span> defined(ESP32)</span>
+  WiFi<span class="token punctuation">.</span><span class="token function">setSleep</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// Desabilita modo sleep no ESP32</span>
+<span class="token macro property">#<span class="token directive keyword">endif</span></span>
+
+  WiFi<span class="token punctuation">.</span><span class="token function">setAutoReconnect</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// Habilita reconexão automática</span>
+  WiFi<span class="token punctuation">.</span><span class="token function">begin</span><span class="token punctuation">(</span>WIFI_SSID<span class="token punctuation">,</span> WIFI_PASS<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">unsigned</span> <span class="token keyword">long</span> startTime <span class="token operator">=</span> <span class="token function">millis</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">while</span> <span class="token punctuation">(</span>WiFi<span class="token punctuation">.</span><span class="token function">status</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> WL_CONNECTED<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    Serial<span class="token punctuation">.</span><span class="token function">print</span><span class="token punctuation">(</span><span class="token string">"."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">delay</span><span class="token punctuation">(</span><span class="token number">250</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">millis</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> startTime <span class="token operator">&gt;</span> <span class="token number">20000</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token comment">// Timeout de 20 segundos</span>
+      Serial<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"\n[WiFi]: Falha ao conectar!"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token keyword">return</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+
+  Serial<span class="token punctuation">.</span><span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"\n[WiFi]: Conectado! IP: %s\n"</span><span class="token punctuation">,</span> WiFi<span class="token punctuation">.</span><span class="token function">localIP</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">c_str</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// Configura e inicia o SinricPro</span>
+<span class="token keyword">void</span> <span class="token function">setupSinricPro</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token function">pinMode</span><span class="token punctuation">(</span>RELAYPIN_1<span class="token punctuation">,</span> OUTPUT<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// Define o pino do relé/LED como saída</span>
+  <span class="token function">digitalWrite</span><span class="token punctuation">(</span>RELAYPIN_1<span class="token punctuation">,</span> LOW<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// Garante que comece desligado</span>
+
+  <span class="token comment">// Associa o Device ID do SinricPro à função de callback</span>
+  SinricProSwitch <span class="token operator">&amp;</span>mySwitch1 <span class="token operator">=</span> SinricPro<span class="token punctuation">[</span>SWITCH_ID_1<span class="token punctuation">]</span><span class="token punctuation">;</span>
+  mySwitch1<span class="token punctuation">.</span><span class="token function">onPowerState</span><span class="token punctuation">(</span>onPowerState1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">// Callbacks para status da conexão com o servidor SinricPro</span>
+  SinricPro<span class="token punctuation">.</span><span class="token function">onConnected</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    Serial<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Conectado ao SinricPro"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  SinricPro<span class="token punctuation">.</span><span class="token function">onDisconnected</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    Serial<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Desconectado do SinricPro"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  SinricPro<span class="token punctuation">.</span><span class="token function">restoreDeviceStates</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// Opcional: tenta restaurar o último estado conhecido dos dispositivos do servidor</span>
+  SinricPro<span class="token punctuation">.</span><span class="token function">begin</span><span class="token punctuation">(</span>APP_KEY<span class="token punctuation">,</span> APP_SECRET<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// Inicia a conexão com o SinricPro</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// Função de configuração principal, executada uma vez</span>
+<span class="token keyword">void</span> <span class="token function">setup</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  Serial<span class="token punctuation">.</span><span class="token function">begin</span><span class="token punctuation">(</span>BAUD_RATE<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// Inicia a comunicação serial</span>
+  Serial<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"\n\nInicializando..."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token function">setupWiFi</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>       <span class="token comment">// Chama a função de configuração do Wi-Fi</span>
+  <span class="token function">setupSinricPro</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// Chama a função de configuração do SinricPro</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// Função de loop principal, executada repetidamente</span>
+<span class="token keyword">void</span> <span class="token function">loop</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  SinricPro<span class="token punctuation">.</span><span class="token function">handle</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// Essencial para manter a comunicação com o SinricPro e processar comandos</span>
+<span class="token punctuation">}</span>
+
+</code></pre>
+    <hr>
+    <p><a href="pagina_inicial.html">&lt;&lt; Voltar para a Página Inicial</a></p>
+  </div>
+</body>
+</html>

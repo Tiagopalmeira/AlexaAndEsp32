@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configuração do Arduino IDE para ESP32</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+<body class="stackedit">
+  <div class="stackedit__html">
+    <h1 id="configuracao-arduino-ide">🔧 Configuração do Arduino IDE para ESP32</h1>
+    <hr>
+    <h2 id="json-de-configuração-da-esp32-na-máquina-do-usuário">Json de configuração da ESP32 na máquina do usuário:</h2>
+    <pre class=" language-bash"><code class="prism  language-bash">https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
+</code></pre>
+    <h3 id="use-este-link-em-file--preferences--additional-board-config">Use este link em <code>File &gt; Preferences &gt; Additional Boards Manager URLs</code></h3>
+    <p>Após adicionar o link acima, vá em <code>Tools &gt; Board &gt; Boards Manager...</code>, procure por "esp32" e instale o pacote "esp32 by Espressif Systems".</p>
+    <hr>
+    <h2 id="📦-requisitos">📦 Requisitos</h2>
+    <ul>
+      <li>ESP32 (ou ESP8266, com as devidas adaptações no código para Wi-Fi e pinos)</li>
+      <li>Conta no <a href="https://portal.sinric.pro/">SinricPro</a></li>
+      <li>App da <strong>Amazon Alexa</strong></li>
+      <li>Arduino IDE com bibliotecas instaladas (via <code>Sketch &gt; Include Library &gt; Manage Libraries...</code>):
+        <ul>
+          <li><code>SinricPro</code> (por Boris Jaeger)</li>
+          <li><code>WiFi</code> (geralmente já inclusa no pacote ESP32/ESP8266)</li>
+          <li><code>ArduinoJson</code> (por Benoit Blanchon - dependência da SinricPro, geralmente instalada automaticamente)</li>
+          <li><code>WebSockets</code> (por Markus Sattler - dependência da SinricPro, geralmente instalada automaticamente)</li>
+        </ul>
+      </li>
+    </ul>
+    <hr>
+    <p><a href="pagina_inicial.html">&lt;&lt; Voltar para a Página Inicial</a></p>
+  </div>
+</body>
+</html>
